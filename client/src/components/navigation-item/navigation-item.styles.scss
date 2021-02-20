@@ -1,0 +1,13 @@
+.navigation-item {
+  width: 55px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navigation-item:hover {
+  background-color: #d4edff;
+  color: #1fa2f1;
+  border-radius: 50%;
+}

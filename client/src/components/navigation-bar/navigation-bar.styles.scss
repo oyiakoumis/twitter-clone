@@ -1,0 +1,25 @@
+.navigation-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 2px 5px;
+  height: 100%;
+  position: sticky;
+  top: 0;
+
+  button {
+    width: 55px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background-color: #d4edff;
+      color: #1fa2f1;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  }
+}

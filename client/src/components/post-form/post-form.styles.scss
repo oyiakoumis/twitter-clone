@@ -1,0 +1,55 @@
+.post-form {
+  padding: 10px 15px;
+  display: grid;
+  grid-template-columns: 59px auto;
+  border-bottom: rgb(235, 238, 240) 1px solid;
+}
+
+// User Image
+.user-image img {
+  width: 49px;
+  height: 49px;
+  border-radius: 50%;
+}
+
+// Form
+.post-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+// TextArea
+.post-form textarea {
+  width: 100%;
+  border: none;
+  // border-bottom: rgb(235, 238, 240) 1px solid;
+  resize: none;
+  outline: none;
+  font-size: 19px;
+  line-height: 24.9px;
+  font-weight: 400;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+}
+
+// Button div
+.button-div {
+  width: 100%;
+  padding-top: 5px;
+  display: flex;
+}
+
+// Tweet Button
+.button-div button {
+  margin-left: auto;
+  background-color: #1fa2f1;
+  color: white;
+  border: none;
+  border-radius: 40px;
+  padding: 7px 15px;
+  width: 78px;
+  height: 39px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}

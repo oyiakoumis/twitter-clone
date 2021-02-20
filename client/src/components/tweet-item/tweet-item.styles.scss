@@ -1,0 +1,131 @@
+// Variables
+$like-color: #de2960;
+$like-bg-color: rgba(224, 36, 94, 0.1);
+$retweet-color: #27be67;
+$retweet-bg-color: rgba(23, 191, 99, 0.1);
+$comment-color: #2aa3ef;
+$comment-bg-color: rgba(29, 161, 242, 0.1);
+
+// Mixins
+@mixin buttonHover($color, $bg-color) {
+  color: $color;
+  path {
+    fill: $color;
+  }
+
+  .icon {
+    background-color: $bg-color;
+    border-radius: 50%;
+  }
+}
+
+// Tweet Item
+.tweet-item {
+  padding: 10px 15px;
+  border-bottom: rgb(235, 238, 240) 1px solid;
+  display: grid;
+  grid-template-columns: 59px auto;
+  justify-items: start;
+  align-items: start;
+  grid-template-areas:
+    "user-image tweet-header"
+    "user-image tweet-content"
+    "user-image tweet-footer";
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+
+  // User Image
+  .user-image {
+    grid-area: user-image;
+    padding-right: 10px;
+
+    img {
+      width: 49px;
+      height: 49px;
+      border-radius: 50%;
+    }
+  }
+
+  // Tweet Header
+  .tweet-header {
+    grid-area: tweet-header;
+
+    & > * {
+      padding-right: 5px;
+    }
+
+    .name,
+    .dot-separator {
+      font-weight: bold;
+    }
+
+    .username,
+    .dot-separator,
+    .created-at {
+      color: rgb(91, 112, 131);
+    }
+
+    .dot-separator {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  // Tweet Content
+  .tweet-content {
+    grid-area: tweet-content;
+    padding-bottom: 5px;
+  }
+
+  // Tweet Footer
+  .tweet-footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    grid-area: tweet-footer;
+    position: relative;
+    left: -5px;
+
+    button {
+      width: 80px;
+      padding-right: 20px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-evenly;
+    }
+
+    .icon {
+      padding: 5px;
+      margin-right: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .comment-button:hover {
+      @include buttonHover(
+        $comment-color,
+        $comment-bg-color
+      );
+    }
+    .retweet-button:hover {
+      @include buttonHover(
+        $retweet-color,
+        $retweet-bg-color
+      );
+    }
+    .like-button:hover {
+      @include buttonHover($like-color, $like-bg-color);
+    }
+  }
+}
