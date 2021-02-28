@@ -28,7 +28,7 @@ const HomePage = () => {
       </div>
       <PostForm userImage={userImage} />
       <div className="separator"></div>
-      <div className="posts-timeline">
+      <div className="home-timeline">
         <TweetItem {...tweet} />
         <TweetItem {...tweet} />
         <TweetItem {...tweet} />
