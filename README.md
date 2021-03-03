@@ -27,8 +27,6 @@ I made this as a personal project to apply what I recently learned on the MERN s
 
 ## System Design Documentation
 
----
-
 ### Functional and Non-functional Requirements
 
 #### Functional requirements:
