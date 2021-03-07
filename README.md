@@ -1,7 +1,7 @@
 # Twitter Clone (MERN)
 
-This is a Twitter clone built with ReactJS, Redux, NodeJS, Express, and MongoDB (MERN).
-I made this as a personal project to apply what I recently learned on the MERN stack.
+This is a Twitter clone built with ReactJS, Redux, Hooks, NodeJS, Express, and MongoDB (MERN).
+I made this as a side-project to apply what I recently learned on the MERN stack.
 
 ## Table of Contents
 
@@ -30,6 +30,9 @@ I made this as a personal project to apply what I recently learned on the MERN s
 ### Functional and Non-functional Requirements
 
 #### Functional requirements:
+
+<!-- TODO: talk about Auth and JWT -->
+<!-- TODO: talk about Websocket and timeline auto refresh. -->
 
 - Users should be able to register an account and to log in to the app.
 - Users should be able to post new tweets (text only), and delete existing ones.
@@ -117,6 +120,7 @@ For convenience sake, the **push model** is used to notify users of new tweets. 
 - Data proxy in front of database servers to cache hot tweets and users.
   - cache size: 20% of daily data with Least Recently Used (LRU) policy.
 - Distributed Object Storages to store tweets medias (photos and videos).
+- Server-side rendering for SEO.
 
 For more information cf. [1].
 

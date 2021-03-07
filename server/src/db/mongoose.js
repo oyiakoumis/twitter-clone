@@ -14,4 +14,4 @@ db.on(
 );
 db.once("open", function () {
   console.log("Mongoose has successfully connected to db.");
-})
+});
