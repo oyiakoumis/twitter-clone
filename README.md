@@ -52,14 +52,38 @@ I made this as a side-project to apply what I recently learned on the MERN stack
 
 ### API Endpoints
 
-- GET /api/users/<username>
-- GET /api/users/<username>/tweets?page=1&per_page=30
-- GET /api/users/<username>/followers?page=1&per_page=30
-- GET /api/users/<username>/followees?page=1&per_page=30
-- POST /api/users/<username>/tweets
-- POST /api/users/<username>/:tweetId
-- POST /api/users/<username>/followers
-- POST /api/users/<username>/followees
+#### GET
+
+- GET /api/users/me
+- GET /api/users/:username
+- GET /api/users/:username/avatar
+- GET /api/users/:username/followers
+- GET /api/users/:username/followees
+- GET /api/users/:username/followers?limit=10&skip=30
+- GET /api/users/:username/followees?limit=10&skip=30
+- GET /api/tweets/:tweetId
+- GET /api/tweets/:tweetId/comments
+- GET /api/tweets?username=elonmusk
+- GET /api/tweets?username=elonmusk&limit=10&skip=30
+
+#### POST
+
+- POST /api/users/signup
+- POST /api/users/login
+- POST /api/users/logout
+- POST /api/users/me/avatar
+- POST /api/tweets/:tweetId/comments
+
+#### PUT
+
+- PUT /api/users/me?name=Elon+Musk
+- PUT /api/tweets/:tweetId
+
+#### DELETE
+
+- DELETE /api/users/me
+- DELETE /api/users/me/avatar
+- DELETE /api/tweets/:tweetId
 
 ### Database, Storage and Usage Discussion
 

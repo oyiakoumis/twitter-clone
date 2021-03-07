@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
       unique: true,
+      index: true,
     },
     bio: {
       type: String,
@@ -27,6 +28,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
       unique: true,
+      index: true,
       validate(value) {
         if (!validator.isEmail(value)) {
           throw new Error("Email is invalid.");
