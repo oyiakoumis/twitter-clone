@@ -1,5 +1,7 @@
 # Twitter Clone (MERN)
 
+![](assets/twitter_banner.jpg "Twitter banner")
+
 This is a Twitter clone built with ReactJS, Redux, Hooks, NodeJS, Express, and MongoDB (MERN).
 I made this as a side-project to apply what I recently learned on the MERN stack.
 
@@ -71,18 +73,24 @@ I made this as a side-project to apply what I recently learned on the MERN stack
 - POST /api/users/signup
 - POST /api/users/login
 - POST /api/users/logout
-- POST /api/users/me/avatar
+- POST /api/users/logoutAll
 - POST /api/tweets/:tweetId/comments
 
 #### PUT
 
-- PUT /api/users/me?name=Elon+Musk
-- PUT /api/tweets/:tweetId
+- PUT /api/users/me/avatar
+- PUT /api/users/me/cover
+
+#### PATCH
+
+- PATCH /api/users/me?name=Elon+Musk
+- PATCH /api/tweets/:tweetId
 
 #### DELETE
 
 - DELETE /api/users/me
 - DELETE /api/users/me/avatar
+- DELETE /api/users/me/cover
 - DELETE /api/tweets/:tweetId
 
 ### Database, Storage and Usage Discussion

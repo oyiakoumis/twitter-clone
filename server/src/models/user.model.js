@@ -40,10 +40,10 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 7,
     },
-    profilePicture: {
+    avatar: {
       type: Buffer,
     },
-    coverPicture: {
+    cover: {
       type: Buffer,
     },
     followers: [
@@ -78,8 +78,8 @@ userSchema.methods.toJSON = function () {
 
   delete userObject.password;
   delete userObject.tokens;
-  delete userObject.profilePicture;
-  delete userObject.coverPicture;
+  delete userObject.avatar;
+  delete userObject.cover;
 
   return userObject;
 };
@@ -87,10 +87,7 @@ userSchema.methods.toJSON = function () {
 // method that generate an auth token
 userSchema.methods.generateAuthToken = async function () {
   user = this;
-  const token = jwt.sign(
-    { _id: user._id.toString() },
-    process.env.JWT_SECRET
-  );
+  const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
 
   user.tokens.push({ token });
   await user.save();
@@ -99,20 +96,14 @@ userSchema.methods.generateAuthToken = async function () {
 };
 
 // static method to find a user by his email and password
-userSchema.statics.findByCredentials = async function (
-  email,
-  password
-) {
+userSchema.statics.findByCredentials = async function (email, password) {
   const user = await User.findOne({ email });
 
   if (!user) {
     throw new Error("Unable to login.");
   }
 
-  const isMatch = await bcrypt.compare(
-    password,
-    user.password
-  );
+  const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
     throw new Error("Unable to login");
