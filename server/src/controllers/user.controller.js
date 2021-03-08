@@ -1,5 +1,6 @@
 const sharp = require("sharp");
 
+const User = require("../models/user.model");
 const upload = require("../middleware/upload");
 
 const getUserInformation = async (req, res) => {
@@ -61,6 +62,20 @@ const getUserFollowees = async (req, res) => {
       .execPopulate();
 
     res.send(user.followees);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+const getUserTweets = async (req, res) => {
+  try {
+    const tweets = await Tweet.find({ postedBy: req.params.username }, null, {
+      skip: req.query.skip,
+      limit: req.query.limit,
+      sort: [["createdAt", -1]],
+    });
+
+    res.send(tweets);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -220,6 +235,7 @@ module.exports = {
   getUserAvatar,
   getUserFollowers,
   getUserFollowees,
+  getUserTweets,
   signUpUser,
   logInUser,
   logOutUser,

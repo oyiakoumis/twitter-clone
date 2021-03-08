@@ -63,10 +63,10 @@ I made this as a side-project to apply what I recently learned on the MERN stack
 - GET /api/users/:username/followees
 - GET /api/users/:username/followers?limit=10&skip=30
 - GET /api/users/:username/followees?limit=10&skip=30
+- GET /api/users/:username/tweets?limit=10&skip=30
+- GET /api/tweets/timeline?limit=10&skip=30
 - GET /api/tweets/:tweetId
 - GET /api/tweets/:tweetId/comments
-- GET /api/tweets?username=elonmusk
-- GET /api/tweets?username=elonmusk&limit=10&skip=30
 
 #### POST
 
@@ -74,7 +74,9 @@ I made this as a side-project to apply what I recently learned on the MERN stack
 - POST /api/users/login
 - POST /api/users/logout
 - POST /api/users/logoutAll
+- POST /api/tweets
 - POST /api/tweets/:tweetId/comments
+- POST /api/tweets/:tweetId/like
 
 #### PUT
 
@@ -92,6 +94,8 @@ I made this as a side-project to apply what I recently learned on the MERN stack
 - DELETE /api/users/me/avatar
 - DELETE /api/users/me/cover
 - DELETE /api/tweets/:tweetId
+- DELETE /api/tweets/:tweetId/comments
+- DELETE /api/tweets/:tweetId/like
 
 ### Database, Storage and Usage Discussion
 

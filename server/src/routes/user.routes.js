@@ -1,5 +1,5 @@
 const express = require("express");
-const User = require("../models/user.model");
+
 const auth = require("../middleware/auth");
 const { findUser } = require("../middleware/userMiddleware");
 const userController = require("../controllers/user.controller");
@@ -26,6 +26,10 @@ userRouter.get("/:username/followers", userController.getUserFollowers);
 // GET /api/users/:username/followees?limit=10&skip=30
 userRouter.get("/:username/followees", userController.getUserFollowees);
 
+// GET tweet by its author
+// GET /api/users/:username/tweets?limit=10&skip=30
+tweetRouter.get("/:username/tweets", userController.getUserTweets);
+
 // POST sign up to service
 userRouter.post("/signup", userController.signUpUser);
 
@@ -38,7 +42,7 @@ userRouter.post("/logout", auth, userController.logOutUser);
 // POST log out of all sessions
 userRouter.post("/logoutAll", auth, userController.logOutOfAllSessions);
 
-// PUT upload new avatar to my profile
+// PUT new avatar to my profile
 userRouter.put(
   "/me/avatar",
   auth,
@@ -49,7 +53,7 @@ userRouter.put(
   }
 );
 
-// PUT upload new cover to my profile
+// PUT new cover to my profile
 userRouter.put(
   "/me/cover",
   auth,
@@ -60,17 +64,17 @@ userRouter.put(
   }
 );
 
-// PATCH update user information
+// PATCH user information
 // PATCH /api/users/me?name=Elon+Musk
 userRouter.patch("/me", auth, userController.updateUserProfile);
 
-// DELETE remove user
+// DELETE user
 userRouter.delete("/me", auth, userController.deleteUser);
 
-// DELETE remove user's avatar
+// DELETE user's avatar
 userRouter.delete("/me/avatar", auth, userController.deleteUserAvatar);
 
-// DELETE remove user's cover
+// DELETE user's cover
 userRouter.delete("/me/cover", auth, userController.deleteUserCover);
 
 module.exports = userRouter;
