@@ -6,15 +6,6 @@ const tweetController = require("../controllers/tweet.controller");
 
 const tweetRouter = new express.Router();
 
-// - POST /api/tweets/:tweetId/comments
-// - POST /api/tweets/:tweetId/like
-
-// - PATCH /api/tweets/:tweetId
-
-// - DELETE /api/tweets/:tweetId
-// - DELETE /api/tweets/:tweetId/comments
-// - DELETE /api/tweets/:tweetId/like
-
 // GET tweets for timeline
 // GET /api/tweets/timeline?limit=10&skip=30
 tweetRouter.get("/timeline", auth, async (req, res) => {
@@ -90,6 +81,118 @@ tweetRouter.post("/:tweetId/retweet", auth, async (req, res) => {
 
     await retweet.save();
     res.send(retweet);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+// - POST a comment on tweet
+tweetRouter.post("/:tweetId/comments", auth, async (req, res) => {
+  try {
+    const tweet = await Tweet.findById(req.params.tweetId);
+
+    tweet.comments.push({
+      postedBy: req.user._id,
+      content: req.body.content,
+    });
+
+    await tweet.save();
+
+    res.send(tweet);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+// - POST a like on tweet
+tweetRouter.post("/:tweetId/like", auth, async (req, res) => {
+  try {
+    const tweet = await Tweet.findById(req.params.tweetId);
+
+    const isLiked = tweet.likedBy.includes(req.user._id);
+
+    if (isLiked) {
+      res.status(400).send({ error: "Tweet is already liked." });
+    }
+
+    tweet.likedBy.push(req.user._id);
+
+    await tweet.save();
+
+    res.send();
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+// - PATCH modify the content of a tweet
+tweetRouter.patch("/:tweetId", auth, async (req, res) => {
+  try {
+    const tweet = await Tweet.findById(req.params.tweetId);
+
+    if (tweet.retweetedFrom) {
+      res.status(400).send({ error: "You can't modify a retweet." });
+    }
+
+    tweet.content = req.body.content;
+
+    await tweet.save();
+
+    res.send(tweet);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+// - DELETE a tweet
+tweetRouter.delete("/:tweetId", auth, async (req, res) => {
+  try {
+    const tweet = await Tweet.findByIdAndDelete(req.params.tweetId);
+    res.send();
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+// - DELETE a comment
+tweetRouter.delete("/:tweetId/:commentId", auth, async (req, res) => {
+  try {
+    const tweet = await Tweet.findById(req.params.tweetId);
+    const comment = tweet.comments.find(
+      (comment) => comment._id == req.params.commentId
+    );
+
+    if (comment.postedBy != req.user._id) {
+      res.status(400).send({ error: "Deletion not allowed." });
+    }
+
+    tweet.comments = tweet.comments.filter(
+      (comment) => comment._id != req.params.commentId
+    );
+
+    await tweet.save();
+
+    res.send(comment);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+// - DELETE unlike a tweet
+tweetRouter.delete("/:tweetId/like", auth, async (req, res) => {
+  try {
+    const tweet = await Tweet.findById(req.params.tweetId);
+    const isLiked = tweet.likedBy.find((userId) => userId == req.user._id);
+
+    if (!isLiked) {
+      res.status(400).send({ error: "Tweet isn't liked." });
+    }
+
+    tweet.likedBy = tweet.likedBy.filter((userId) => userId != req.user._id);
+
+    await tweet.save();
+
+    res.send();
   } catch (error) {
     res.status(500).send(error);
   }

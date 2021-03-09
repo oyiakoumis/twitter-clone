@@ -5,6 +5,7 @@ const tweetSchema = new mongoose.Schema(
     postedBy: {
       type: mongoose.Types.ObjectId,
       ref: "User",
+      required: True,
     },
     retweetedFrom: {
       type: mongoose.Types.ObjectId,
@@ -34,6 +35,7 @@ const tweetSchema = new mongoose.Schema(
           postedBy: {
             type: mongoose.Types.ObjectId,
             ref: "User",
+            required: True,
           },
           content: {
             type: String,

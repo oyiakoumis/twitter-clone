@@ -200,9 +200,8 @@ const updateUserProfile = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
-    const user = req.user;
-    await user.remove();
-    res.send(user);
+    await User.findByIdAndDelete(req.user._id);
+    res.send();
   } catch (error) {
     res.status(500).send(error);
   }
