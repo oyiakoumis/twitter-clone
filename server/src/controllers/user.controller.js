@@ -3,7 +3,7 @@ const sharp = require("sharp");
 const User = require("../models/user.model");
 const upload = require("../middleware/upload");
 
-const getUserInformation = async (req, res) => {
+const getProfile = async (req, res) => {
   try {
     const user = req.user;
     res.send(user);
@@ -230,7 +230,7 @@ const deleteUserCover = async (req, res) => {
 };
 
 module.exports = {
-  getUserInformation,
+  getProfile,
   getUserAvatar,
   getUserFollowers,
   getUserFollowees,

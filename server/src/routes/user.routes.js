@@ -6,14 +6,14 @@ const userController = require("../controllers/user.controller");
 
 const userRouter = new express.Router();
 
-// GET public information from authenticated user
-userRouter.get("/me", auth, userController.getUserInformation);
+// GET my profile
+userRouter.get("/me", auth, userController.getProfile);
 
 // Use findUser middleware on all GET '/:username/*'
 userRouter.get("/:username/*", findUser);
 
-// GET public information from selected user
-userRouter.get("/:username", userController.getUserInformation);
+// GET profile from selected user
+userRouter.get("/:username", userController.getProfile);
 
 // GET avatar from selected user
 userRouter.get("/:username/avatar", userController.getUserAvatar);
