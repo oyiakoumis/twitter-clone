@@ -17,10 +17,7 @@ const userOne = {
   followers: [userTwoId],
   tokens: [
     {
-      token: jwt.sign({ _id: userOneId }, process.env.JWT_SECRET),
-    },
-    {
-      token: jwt.sign({ _id: userOneId }, process.env.JWT_SECRET),
+      token: jwt.sign({ _id: userOneId.toString() }, process.env.JWT_SECRET),
     },
   ],
 };

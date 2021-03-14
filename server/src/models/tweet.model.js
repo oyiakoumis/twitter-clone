@@ -20,7 +20,7 @@ const tweetSchema = new mongoose.Schema(
     content: {
       type: String,
       validate(value) {
-        if (this.validate.length > 140) {
+        if (value.length > 140) {
           throw new Error("Tweet cannot exceed 140 characters.");
         }
       },

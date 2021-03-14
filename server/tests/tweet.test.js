@@ -5,9 +5,9 @@ const app = require("../src/app");
 const Tweet = require("../src/models/tweet.model");
 const db = require("./fixtures/db");
 
+beforeAll(() => db.clearUpDatabase());
 beforeEach(() => db.setupDatabase());
 afterEach(() => db.clearUpDatabase());
-
 
 test("Should get a tweet by its id", async () => {
   await request(app)
@@ -55,16 +55,13 @@ test("Should not post a tweet if user is not authenticated", async () => {
 });
 
 test("Should post a retweet", async () => {
-  await request(app)
-    .post(`/api/tweets/${db.tweetTwo._id}/retweet`)
+  const response = await request(app)
+    .post(`/api/tweets/${db.tweetOne._id}/retweet`)
     .set("Authorization", `Bearer ${db.userTwo.tokens[0].token}`)
     .send()
     .expect(200);
 
-  const tweet = await Tweet.findOne({
-    postedBy: db.userTwo._id,
-    retweetedFrom: db.tweetTwo._id,
-  });
+  const tweet = await Tweet.findById(response.body._id);
 
   expect(tweet.content).toBeUndefined();
 });
@@ -114,7 +111,7 @@ test("Should delete a tweet", async () => {
 
   const tweet = await Tweet.findById(db.tweetTwo._id);
 
-  expect(tweet).toBeUndefined();
+  expect(tweet).toBeNull();
 });
 
 test("Should not delete other user tweet", async () => {
@@ -126,7 +123,7 @@ test("Should not delete other user tweet", async () => {
 
   const tweet = await Tweet.findById(db.tweetTwo._id);
 
-  expect(tweet).not.toBeUndefined();
+  expect(tweet).not.toBeNull();
 });
 
 test("Should delete a comment", async () => {

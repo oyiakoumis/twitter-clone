@@ -160,7 +160,14 @@ const patchTweet = async (req, res) => {
 
 const deleteTweet = async (req, res) => {
   try {
-    const tweet = await Tweet.findByIdAndDelete(req.params.tweetId);
+    const tweet = await Tweet.findById(req.params.tweetId);
+
+    if (!req.user.equals(tweet.postedBy)) {
+      return res.status(401).send();
+    }
+
+    await tweet.delete();
+
     res.send();
   } catch (error) {
     res.status(500).send(error);
