@@ -5,8 +5,9 @@ const app = require("../src/app");
 const User = require("../src/models/user.model");
 const db = require("./fixtures/db");
 
-beforeEach(db.setupDatabase);
-afterEach(db.clearDatabase);
+beforeEach(() => db.setupDatabase());
+afterEach(() => db.clearUpDatabase());
+
 
 test("Should get my profile", async () => {
   await request(app)

@@ -5,11 +5,15 @@ const app = require("../src/app");
 const Tweet = require("../src/models/tweet.model");
 const db = require("./fixtures/db");
 
-beforeEach(db.setupDatabase);
-afterEach(db.clearDatabase);
+beforeEach(() => db.setupDatabase());
+afterEach(() => db.clearUpDatabase());
+
 
 test("Should get a tweet by its id", async () => {
-  await request(app).get(`/api/tweets/${db.tweetOne._id}`).send().expect(200);
+  await request(app)
+    .get(`/api/tweets/${db.tweetOne._id.toString()}`)
+    .send()
+    .expect(200);
 });
 
 test("Should post a new tweet", async () => {

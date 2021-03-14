@@ -1,11 +1,13 @@
 const sharp = require("sharp");
 
 const User = require("../models/user.model");
+const Tweet = require("../models/tweet.model");
 const upload = require("../middleware/upload");
 
 const getProfile = async (req, res) => {
   try {
     const user = req.user;
+
     res.send(user);
   } catch (error) {
     res.status(500).send(error);
@@ -15,10 +17,6 @@ const getProfile = async (req, res) => {
 const getUserAvatar = async (req, res) => {
   try {
     const user = req.user;
-
-    if (!user.avatar) {
-      res.status(404).send();
-    }
 
     res.set("Content-Type", "image/png");
     res.send(user.avatar);
@@ -69,14 +67,15 @@ const getUserFollowees = async (req, res) => {
 
 const getUserTweets = async (req, res) => {
   try {
-    const tweets = await Tweet.find({ postedBy: req.params.username }, null, {
+    const tweets = await Tweet.find({ postedBy: req.user._id }, null, {
       skip: req.query.skip,
       limit: req.query.limit,
-      sort: [["createdAt", -1]],
+      sort: { createdAt: -1 },
     });
 
     res.send(tweets);
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -97,10 +96,13 @@ const signUpUser = async (req, res) => {
 
 const logInUser = async (req, res) => {
   try {
-    const user = User.findByCredentials(req.body.email, req.body.password);
+    const user = await User.findByCredentials(
+      req.body.email,
+      req.body.password
+    );
 
     if (!user) {
-      res.status(404).send();
+      return res.status(404).send();
     }
 
     const token = await user.generateAuthToken();
@@ -139,11 +141,39 @@ const logOutOfAllSessions = async (req, res) => {
   }
 };
 
+const followUser = async (req, res) => {
+  try {
+    const user = req.user;
+    const userToFollow = await User.findOne({ username: req.params.username });
+
+    if (user.equals(userToFollow)) {
+      return res.status(400).send();
+    }
+
+    const isFollowed = userToFollow.followers.find((userId) =>
+      user.equals(userId)
+    );
+
+    if (isFollowed) {
+      return res.send(); // Keep API Restful
+    }
+
+    userToFollow.followers.push(user._id);
+    user.followees.push(userToFollow._id);
+
+    await userToFollow.save();
+    await user.save();
+
+    res.send();
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
 const putUserAvatar = async (req, res) => {
   const user = req.user;
 
-  const buffer = await sharp
-    .buffer(req.file.buffer)
+  const buffer = await sharp(req.file.buffer)
     .resize({ width: 400, height: 400 })
     .png()
     .toBuffer();
@@ -158,8 +188,7 @@ const putUserAvatar = async (req, res) => {
 const putUserCover = async (req, res) => {
   const user = req.user;
 
-  const buffer = await sharp
-    .buffer(req.file.buffer)
+  const buffer = await sharp(req.file.buffer)
     .resize({ width: 1500, height: 500 })
     .png()
     .toBuffer();
@@ -181,7 +210,7 @@ const updateUserProfile = async (req, res) => {
   });
 
   if (!isValidOperation) {
-    res.status(400).send({ error: "Invalid updates." });
+    return res.status(400).send({ error: "Invalid updates." });
   }
 
   try {
@@ -229,6 +258,39 @@ const deleteUserCover = async (req, res) => {
   }
 };
 
+const deleteFollow = async (req, res) => {
+  try {
+    const user = req.user;
+    const userToFollow = await User.findOne({ username: req.params.username });
+
+    if (user.equals(userToFollow)) {
+      return res.status(400).send();
+    }
+
+    const isFollowed = userToFollow.followers.find((userId) =>
+      user.equals(userId)
+    );
+
+    if (!isFollowed) {
+      return res.send(); // Keep API Restful
+    }
+
+    userToFollow.followers = userToFollow.followers.filter(
+      (userId) => !user.equals(userId)
+    );
+    user.followees = user.followees.filter(
+      (userId) => !userToFollow.equals(userId)
+    );
+
+    await userToFollow.save();
+    await user.save();
+
+    res.send();
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
 module.exports = {
   getProfile,
   getUserAvatar,
@@ -239,10 +301,12 @@ module.exports = {
   logInUser,
   logOutUser,
   logOutOfAllSessions,
+  followUser,
   putUserAvatar,
   putUserCover,
   updateUserProfile,
   deleteUser,
   deleteUserAvatar,
   deleteUserCover,
+  deleteFollow,
 };

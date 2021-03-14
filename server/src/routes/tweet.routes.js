@@ -1,6 +1,5 @@
 const express = require("express");
 
-const Tweet = require("../models/tweet.model");
 const auth = require("../middleware/auth");
 const tweetController = require("../controllers/tweet.controller");
 
@@ -32,7 +31,7 @@ tweetRouter.patch("/:tweetId", auth, tweetController.patchTweet);
 tweetRouter.delete("/:tweetId", auth, tweetController.deleteTweet);
 
 // - DELETE a comment
-tweetRouter.delete("/:tweetId/:commentId", auth, tweetController.deleteComment);
+tweetRouter.delete("/:tweetId/comments/:commentId", auth, tweetController.deleteComment);
 
 // - DELETE like a tweet
 tweetRouter.delete("/:tweetId/like", auth, tweetController.deleteLike);

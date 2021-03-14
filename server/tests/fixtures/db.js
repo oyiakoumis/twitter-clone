@@ -14,7 +14,7 @@ const userOne = {
   bio: "Hi, my name is Odysseas and I am doing a MERN project.",
   email: "mariecurie@gmail.com",
   password: "marie12345",
-  followers: [userTwo._id],
+  followers: [userTwoId],
   tokens: [
     {
       token: jwt.sign({ _id: userOneId }, process.env.JWT_SECRET),
@@ -87,4 +87,6 @@ module.exports = {
   tweetOne,
   tweetTwo,
   retweetOne,
+  setupDatabase,
+  clearUpDatabase,
 };

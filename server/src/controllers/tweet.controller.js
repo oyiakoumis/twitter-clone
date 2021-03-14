@@ -1,3 +1,6 @@
+const mongoose = require("mongoose");
+const Tweet = require("../models/tweet.model");
+
 const getTimeline = async (req, res) => {
   try {
     const user = req.user;
@@ -9,7 +12,7 @@ const getTimeline = async (req, res) => {
         projection: { comments: 0 },
         limit: req.query.limit,
         skip: req.query.skip,
-        sort: [["createdAt", -1]],
+        sort: { createdAt: -1 },
       }
     );
 
@@ -24,7 +27,7 @@ const getTweet = async (req, res) => {
     const tweet = await Tweet.findById(req.params.tweetId);
 
     if (!tweet) {
-      res.status(404).send();
+      return res.status(404).send();
     }
 
     res.send(tweet);
@@ -41,6 +44,7 @@ const postTweet = async (req, res) => {
     });
 
     await tweet.save();
+
     res.send(tweet);
   } catch (error) {
     res.status(500).send(error);
@@ -49,16 +53,18 @@ const postTweet = async (req, res) => {
 
 const postRetweet = async (req, res) => {
   try {
-    const originalTweet = await Tweet.findById(req.params.tweetId, {
-      projection: { retweetBy: 1 },
-    });
+    const originalTweet = await Tweet.findById(req.params.tweetId);
 
-    const isAlreadyRetweeted = originalTweet.retweetBy.find(
-      (user) => user._id == req.user._id
+    if (!originalTweet) {
+      return res.status(404).send();
+    }
+
+    const isAlreadyRetweeted = originalTweet.retweetedBy.find((userId) =>
+      req.user.equals(userId)
     );
 
     if (isAlreadyRetweeted) {
-      res.status(400).send({ error: "Tweet has already been retweeted." });
+      return res.send();
     }
 
     const retweet = new Tweet({
@@ -67,6 +73,11 @@ const postRetweet = async (req, res) => {
     });
 
     await retweet.save();
+
+    originalTweet.retweetedBy.push(req.user);
+
+    await originalTweet.save();
+
     res.send(retweet);
   } catch (error) {
     res.status(500).send(error);
@@ -75,16 +86,23 @@ const postRetweet = async (req, res) => {
 
 const postComment = async (req, res) => {
   try {
+    if (!req.body.content) {
+      return res.status(400).send();
+    }
+
     const tweet = await Tweet.findById(req.params.tweetId);
 
-    tweet.comments.push({
+    const comment = {
+      _id: new mongoose.Types.ObjectId(),
       postedBy: req.user._id,
       content: req.body.content,
-    });
+    };
+
+    tweet.comments.push(comment);
 
     await tweet.save();
 
-    res.send(tweet);
+    res.send(comment);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -97,7 +115,7 @@ const postLike = async (req, res) => {
     const isLiked = tweet.likedBy.includes(req.user._id);
 
     if (isLiked) {
-      res.status(400).send({ error: "Tweet is already liked." });
+      return res.send(); // Keep API Restful
     }
 
     tweet.likedBy.push(req.user._id);
@@ -111,11 +129,23 @@ const postLike = async (req, res) => {
 };
 
 const patchTweet = async (req, res) => {
+  const updates = Object.keys(req.body);
+
+  const allowedUpdates = ["content"];
+
+  const isValidOperation = updates.every((update) => {
+    return allowedUpdates.includes(update);
+  });
+
+  if (!isValidOperation) {
+    return res.status(400).send();
+  }
+
   try {
     const tweet = await Tweet.findById(req.params.tweetId);
 
     if (tweet.retweetedFrom) {
-      res.status(400).send({ error: "You can't modify a retweet." });
+      return res.status(400).send({ error: "You can't modify a retweet." });
     }
 
     tweet.content = req.body.content;
@@ -140,16 +170,16 @@ const deleteTweet = async (req, res) => {
 const deleteComment = async (req, res) => {
   try {
     const tweet = await Tweet.findById(req.params.tweetId);
-    const comment = tweet.comments.find(
-      (comment) => comment._id == req.params.commentId
+    const comment = tweet.comments.find((comment) =>
+      comment.equals(req.params.commentId)
     );
 
-    if (comment.postedBy != req.user._id) {
-      res.status(400).send({ error: "Deletion not allowed." });
+    if (!req.user.equals(comment.postedBy)) {
+      return res.status(400).send({ error: "Deletion not allowed." });
     }
 
     tweet.comments = tweet.comments.filter(
-      (comment) => comment._id != req.params.commentId
+      (comment) => !comment.equals(req.params.commentId)
     );
 
     await tweet.save();
@@ -163,13 +193,13 @@ const deleteComment = async (req, res) => {
 const deleteLike = async (req, res) => {
   try {
     const tweet = await Tweet.findById(req.params.tweetId);
-    const isLiked = tweet.likedBy.find((userId) => userId == req.user._id);
+    const isLiked = tweet.likedBy.find((userId) => req.user.equals(userId));
 
     if (!isLiked) {
-      res.status(400).send({ error: "Tweet isn't liked." });
+      return res.send(); // Keep API Restful
     }
 
-    tweet.likedBy = tweet.likedBy.filter((userId) => userId != req.user._id);
+    tweet.likedBy = tweet.likedBy.filter((userId) => !req.user.equals(userId));
 
     await tweet.save();
 
