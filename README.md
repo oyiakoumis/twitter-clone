@@ -5,7 +5,9 @@
 This is a Twitter clone built with ReactJS, Redux, Hooks, NodeJS, Express, and MongoDB (MERN).
 I made this as a side-project to apply what I recently learned on the MERN stack.
 
-Current Status: **IN DEVELOPMENT**
+Current Status:
+   - server-side done
+   - client-side **IN DEVELOPMENT**
 
 ---
 
